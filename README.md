@@ -6,8 +6,6 @@
  \/   \___|_|  |_|  \__,_|_|  \___/|_|  |_| |_| |_| \/    \/_|_| |_|\___|\___|_|  \__,_|_|  \__|
 ```
 
-![preview](preview.gif)
-
 ## Setup
 - Generate an SSH key if you don't already have one with `ssh-keygen -t rsa -b 4096`.
 - [Install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli) (tested on 1.1.3).
