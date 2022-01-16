@@ -1,18 +1,22 @@
 ```
- _____                     __                               _                            __ _
-/__   \___ _ __ _ __ __ _ / _| ___  _ __ _ __ ___     /\/\ (_)_ __   ___  ___ _ __ __ _ / _| |_
-  / /\/ _ \ '__| '__/ _` | |_ / _ \| '__| '_ ` _ \   /    \| | '_ \ / _ \/ __| '__/ _` | |_| __|
- / / |  __/ |  | | | (_| |  _| (_) | |  | | | | | | / /\/\ \ | | | |  __/ (__| | | (_| |  _| |_
- \/   \___|_|  |_|  \__,_|_|  \___/|_|  |_| |_| |_| \/    \/_|_| |_|\___|\___|_|  \__,_|_|  \__|
+ _____ _____ ____           _                _
+|_   _|  ___| __ )  ___  __| |_ __ ___   ___| | _ ___  ___ _ ____   _____ _ __
+  | | | |_  |  _ \ / _ \/ _` | '__/ _ \ / __| |/ / __|/ _ | '__\ \ / / _ | '__|
+  | | |  _| | |_) |  __| (_| | | | (_) | (__|   <\__ |  __| |   \ V |  __| |
+  |_| |_|   |____/ \___|\__,_|_|  \___/ \___|_|\_|___/\___|_|    \_/ \___|_|
+
 ```
+## Intro
+I forked this project off someone who did a terraform setup for Java edition of minecraft, I bought the Bedrock edition of minecraft therefore created this project for myself to host a Minecraft Server in Bedrock Edition.
 
 ## Setup
-- Generate an SSH key if you don't already have one with `ssh-keygen -t rsa -b 4096`.
+- [Install PuTTy](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
 - [Install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli) (tested on 1.1.3).
 - [Install the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
 - [Configure the AWS CLI with an access key ID and secret access key](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html).
 
 ## Variables
+Please fill out the **terraform.tfvars** file before running this configuration
 
 ### `your_region`
 - Where you want your server to be. The options are [here](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html).
@@ -22,18 +26,22 @@
 - Only this IP will be able to administer the server. Find it [here](https://www.whatsmyip.org/).
 - E.g. `104.65.182.8`.
 
-### `mojang_server_url`
-- Copy the server download link from [here](https://www.minecraft.net/en-us/download/server/).
-- E.g. `https://launcher.mojang.com/v1/objects/125e5adf40c659fd3bce3e66e67a16bb49ecc1b9/server.jar`.
+### `keyname`
+- This is the name of your SSH key pair used to access the EC2 instance.
 
-### `your_public_key`
-- This will be in `~/.ssh/id_rsa.pub` by default.
-- E.g. `ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC5dzid+ZR1TGRmnWVbCnD5FAJG20bAGD0WvWrvqabWIZOwARZD9P7P0uArCWBAcdNusyv9RN9/wErT+P3kouJdPzqMoF1qJ08EgDq4qyRRgSG3SZIToNjndmxrRTJF09ybnT+AGMXonmZXk8I5Gx1x3OvM0GvdY9ZJNqGrOBAQDg7CBnY7TMpYNwQ5Brk17GGwGnuBDGJQzQKJ3lbk60GzGC6g6l/iBW7A8eUQhaZnKOnxj6d9TDk/2X1GOiPp3duNLtQKKqw6uDhglPk91lmnGr97pT9/Z+tSUrH+RVbVKdDbPDqMT28xIlZ0x5YR43Ypocvi065Z45yPsTUYcbq4I2ES0v56MU+ZmNuBYYvdHgaiPfF62ddoCkbs00YwjaGL8Nt8rAuOzGDGjnRWAbAcIF2DbE+K8a+lczkK7Ruzg2jXkjGOVvJIP/k9HFfWvybsmcU9thMDXkPBrjyB+Xxqzu/jn+DAjgBjIJS31RcD0noSGer60XwN21HdmUy+R6lSf3PAgFFX7y1NE3mKaattxJ8Eg/0vRf4AJJUTdlEqQlzjNqr0CWnwjcui/8Dt9DBlDjMeWB8kWngLu+y8TLFWkDdBjXsxgAcST630qw5aI2nYCQPEYBjBNJRiHdOJcxelHa8Tb9rSeYg+6eSE9bUBzhN7rKdIUwmAsSeOLcCFnw== alex@gmail.com`.
+### `mojang_server_url`
+- Copy the bedrock edition server download link from [here](https://www.minecraft.net/en-us/download/server/bedrock). (use ubuntu)
+- E.g. `https://minecraft.azureedge.net/bin-linux/bedrock-server-1.18.2.03.zip` for Minecraft version 1.18.2.
 
 ## Steps
 - Run `terraform init`.
 - Run `terraform apply`.
-- Copy the IP output by the previous command into Minecraft.
+- a .pem private key will be made in the folder, convert this to .ppk with puTTygen (comes with puTTy)
+- use that key and the instance public ip to access the EC2
+- This configuration uses a VM image with Minecraft server pre-installed, however it is an old version so you will need to run the `server-update-script.sh` file with sh command.
+- set the bedrock_server file with execute permissions using `chmod +x bedrock_server`
+- start the server with command `LD_LIBRARY_PATH=. ./bedrock_server`
+- Copy the public IP output into Minecraft, port 19312
 - Wait a minute for the server to spin up.
 - Play.
 - Irrecoverably shut everything down with `terraform destroy`.
